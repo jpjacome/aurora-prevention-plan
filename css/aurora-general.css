@@ -1,0 +1,114 @@
+:root {
+  /* Brand Colors */
+  --color-1: #fe8d2c;  
+  --color-2: #00452A;  
+  --color-3: #dcffd6;  
+
+  /* Neutral Colors */
+  --white: #ffffff;
+  --black: #000000;
+  --gray-100: #f5f5f5;
+  --gray-200: #e0e0e0;
+  --gray-300: #c6c6c6;
+  --gray-800: #2d2d2d;
+  
+  /* Typography */
+  --font-titles: 'Playfair Display', serif;
+  --font-paragraphs: 'Buenard', serif;
+
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 2rem;
+  --line-height-base: 1.6;
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 32px;
+  --space-xl: 64px;
+
+  /* Border Radius */
+  --border-radius: 15px;
+
+  /* Shadows */
+  --box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+  /* Transitions */
+  --transition-fast: 0.2s ease-in-out;
+  --transition-base: 0.3s ease-in-out;
+  --transition-slow: 0.5s ease-in-out;
+
+  /* Z-Index */
+  --z-index-dropdown: 1000;
+  --z-index-modal: 1050;
+  --z-index-tooltip: 1100;
+}
+
+h1{
+    font-family: var(--font-titles);
+    font-size: 4rem;
+    text-shadow: none;
+    line-height: 1em;
+    font-weight: 400;
+  }
+  h2{
+    font-family: var(--font-titles);
+    font-size: 3rem;
+    text-shadow: none;
+    line-height: 1em;
+    font-weight: 400;
+  }
+  h3{
+    font-family: var(--font-titles);
+    font-size: 2rem;
+    text-shadow: none;
+    line-height: 1em;
+    font-weight: 400;
+  }
+
+p{
+    font-family: var(--font-paragraphs);
+    font-size: 1.3rem;
+    font-weight: 400;
+    line-height: 1.3em;
+    color: var(--color-3);
+    text-shadow: none;
+}
+
+.btn {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1.35rem;
+    font-weight: 400;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    font-family: var(--font-paragraphs);
+    text-shadow: none;
+}
+
+.btn-primary {
+    background: var(--color-1);
+    color: var(--color-2);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    background: #ff9942;
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--color-3);
+    border: 2px solid var(--color-3);
+}
+
+.btn-secondary:hover {
+    background: var(--color-3);
+    color: var(--color-2);
+    transform: translateY(-2px);
+}

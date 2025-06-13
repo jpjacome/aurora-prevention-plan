@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Shades Full Screen Containers</title>    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            overflow-x: hidden;
+        }        .container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Remove position: sticky - ScrollTrigger pin will handle this */
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }        
+        .inner-container {
+            width: 80%;
+            height: 80%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            /* Enhanced animation support */
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+            will-change: transform, opacity;
+            /* Initial state - will be overridden by GSAP */
+            opacity: 0;
+            transform: scale(0.8) translateY(60px) rotateX(15deg);
+            /* Subtle animated gradient background */
+            position: relative;
+            overflow: hidden;
+        }
+
+        .inner-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.03), 
+                transparent,
+                rgba(255, 255, 255, 0.05),
+                transparent
+            );
+            animation: shimmer 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%) translateY(-100%) rotate(0deg); }
+            50% { transform: translateX(100%) translateY(100%) rotate(180deg); }
+        }
+
+
+        .inner-container:hover::before {
+            animation-duration: 3s; /* Faster shimmer on hover */
+        }.content p {
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-align: center;
+            /* Animation support for text */
+            opacity: 0;
+            transform: translateY(20px);
+            will-change: transform, opacity;
+        }
+
+        .container-1 {
+            background-color: #2d5016; /* Dark forest green */
+        }
+
+        .container-2 {
+            background-color: #4a7c59; /* Medium forest green */
+        }
+
+        .container-3 {
+            background-color: #6b8e6b; /* Sage green */
+        }
+
+        .container-4 {
+            background-color: #8fbc8f; /* Light sage green */
+        }
+
+        .container-5 {
+            background-color: #98fb98; /* Pale green */
+            color: #2d5016; /* Dark text for better contrast on light background */
+        }        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+
+    </style>
+</head>
+<body>
+    <div id="smooth-wrapper">
+        <div id="smooth-content">            <!-- Container 1 - Dark Forest Green -->
+            <div class="container container-1" id="section-1">
+                <div class="inner-container">
+                    <div class="content">
+                        <p>Dark Forest Green Section</p>
+                    </div>
+                </div>
+            </div>            <!-- Container 2 - Medium Forest Green -->
+            <div class="container container-2" id="section-2">
+                <div class="inner-container">
+                    <div class="content">
+                        <p>Medium Forest Green Section</p>
+                    </div>
+                </div>
+            </div>            <!-- Container 3 - Sage Green -->
+            <div class="container container-3" id="section-3">
+                <div class="inner-container">
+                    <div class="content">
+                        <p>Sage Green Section</p>
+                    </div>
+                </div>
+            </div>            <!-- Container 4 - Light Sage Green -->
+            <div class="container container-4" id="section-4">
+                <div class="inner-container">
+                    <div class="content">
+                        <p>Light Sage Green Section</p>
+                    </div>
+                </div>
+            </div>            <!-- Container 5 - Pale Green -->
+            <div class="container container-5" id="section-5">
+                <div class="inner-container">
+                    <div class="content">
+                        <p>Pale Green Section</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    <!-- GSAP and ScrollSmoother CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollSmoother.min.js"></script>
+    
+    <script>
+        // Register GSAP plugins
+        gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+
+        function scrollToSection(sectionNumber) {
+            const section = document.getElementById(`section-${sectionNumber}`);
+            // Use ScrollSmoother's scrollTo method for smooth scrolling
+            let smoother = ScrollSmoother.get();
+            if (smoother) {
+                smoother.scrollTo(section, true, "top top");
+            } else {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }        // Initialize ScrollSmoother
+        document.addEventListener('DOMContentLoaded', function() {            // Create ScrollSmoother instance
+            const smoother = ScrollSmoother.create({
+                wrapper: '#smooth-wrapper',
+                content: '#smooth-content',
+                
+                // **SMOOTH SCROLL CONTROL VALUES**
+                smooth: 3,                   // Main smoothing: 0 = no smoothing, higher = more smoothing
+                                            // Try values: 0.5 (fast), 1 (normal), 2 (smooth), 3+ (very smooth)
+                
+                smoothTouch: 1,           // Touch device smoothing (mobile/tablet)
+                                            // false = no touch smoothing, 0.1-1 = smoothing amount
+                
+                speed: .8,                   // Overall scroll speed multiplier
+                                            // 0.5 = half speed, 1 = normal, 2 = double speed
+                
+                effects: false,             // Disable effects to avoid conflicts with pinning
+                normalizeScroll: true,      // Force scroll on JS thread for consistency
+                
+                // **EASING CONTROL**
+                ease: "expo.out",           // Easing function for smooth scroll
+                                            // Options: "expo", "power2", "elastic", "back", "sine"
+                
+                // **CALLBACKS FOR FINE CONTROL**
+                onUpdate: function() {
+                    // Called on every scroll update
+                    // console.log("Scroll progress:", this.progress);
+                },
+                
+                onStop: function() {
+                    // Called when scrolling stops
+                    console.log("Scrolling stopped at progress:", this.progress);
+                }
+            });            // **SOLUTION: Full-page pinning with proper ScrollTrigger setup**
+            // This approach stacks containers and pins them properly
+            let sections = gsap.utils.toArray('.container');
+            
+            sections.forEach((section, i) => {
+                // Create a ScrollTrigger that pins each section
+                ScrollTrigger.create({
+                    trigger: section,
+                    start: 'top top',
+                    end: 'bottom top',
+                    pin: true,
+                    pinSpacing: false,
+                    // Use scroller that matches ScrollSmoother
+                    scroller: '#smooth-wrapper',
+                });
+            });            // **ELEGANT POP ANIMATIONS FOR INNER CONTAINERS**
+            // Create beautiful entrance animations for each inner container
+            const innerContainers = gsap.utils.toArray('.inner-container');
+            
+            innerContainers.forEach((container, i) => {
+                const textElement = container.querySelector('.content p');
+                
+                // Set initial state - hidden and smaller
+                gsap.set(container, {
+                    opacity: 0,
+                    scale: 0.8,
+                    y: 60,
+                    rotationX: 15,
+                    transformOrigin: "center center"
+                });
+                
+                // Set initial state for text
+                gsap.set(textElement, {
+                    opacity: 0,
+                    y: 20,
+                    scale: 0.9
+                });                // Create the pop animation timeline - one-time entrance only
+                const tl = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: container.closest('.container'), // Trigger on parent container
+                        start: 'top 80%', // Start when container is 80% in view
+                        end: 'top 20%', // End when container reaches 20% from top
+                        toggleActions: 'play none none reverse', // Play on enter, reverse on leave
+                        scroller: '#smooth-wrapper', // Use same scroller as ScrollSmoother
+                        // Optional: Add markers for debugging (remove in production)
+                        // markers: true,
+                        onToggle: self => {
+                            if (self.isActive) {
+                            } else {
+                            }
+                        }
+                    }
+                });
+                
+                // Animate container first
+                tl.to(container, {
+                    opacity: 1,
+                    scale: 1,
+                    y: 0,
+                    rotationX: 0,
+                    duration: 1.2,
+                    ease: "back.out(1.4)", // Bouncy ease for pop effect
+                    delay: i * 0.15 // Stagger animation for each container
+                })
+                // Then animate text content
+                .to(textElement, {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    duration: 0.8,
+                    ease: "power2.out"
+                }, "-=0.6"); // Start text animation 0.6s before container finishes
+                
+                // Add a subtle glow effect on hover
+                container.addEventListener('mouseenter', () => {
+                    gsap.to(container, {
+                        scale: 1,
+                        duration: 0.3,
+                        ease: "power2.out"
+                    });
+                });
+                
+                container.addEventListener('mouseleave', () => {
+                    gsap.to(container, {
+                        boxShadow: "0 0 0px rgba(255, 255, 255, 0)",
+                        scale: 1,
+                        duration: 0.3,
+                        ease: "power2.out"
+                    });
+                    gsap.to(textElement, {
+                        scale: 1,
+                        duration: 0.3,
+                        ease: "power2.out"
+                    });
+                });
+            });// Refresh ScrollTrigger on window resize
+            window.addEventListener('resize', () => {
+                ScrollTrigger.refresh();
+            });            // **DYNAMIC CONTROL METHODS** - Call these from browser console to test
+            window.controlSmoothScroll = {
+                // Change smoothing amount (0-5)
+                setSmooth: (value) => {
+                    smoother.smooth(value);
+                },
+                
+                // Get current smooth value
+                getSmooth: () => {
+                    return smoother.smooth();
+                },
+                
+                // Pause/resume smooth scrolling
+                pause: () => {
+                    smoother.paused(true);
+                },
+                
+                resume: () => {
+                    smoother.paused(false);
+                },
+                
+                // Get current scroll progress (0-1)
+                getProgress: () => {
+                    return smoother.progress;
+                },
+                
+                // Get current scroll velocity
+                getVelocity: () => {
+                    return smoother.getVelocity();
+                }
+            };
+            // **ANIMATION CONTROL METHODS** - Control the pop animations
+            window.controlAnimations = {
+                // Replay all inner container animations
+                replayAnimations: () => {
+                    ScrollTrigger.refresh();
+                },
+                
+                // Kill all animations
+                killAnimations: () => {
+                    gsap.killTweensOf('.inner-container');
+                    gsap.killTweensOf('.content p');
+                },
+                
+                // Reset all inner containers to initial state
+                resetContainers: () => {
+                    gsap.set('.inner-container', {
+                        opacity: 0,
+                        scale: 0.8,
+                        y: 60,
+                        rotationX: 15,
+                        clearProps: "boxShadow"
+                    });
+                    gsap.set('.content p', {
+                        opacity: 0,
+                        y: 20,
+                        scale: 0.9
+                    });
+                },
+                
+                // Check which containers are currently visible
+                getVisibleContainers: () => {
+                    const triggers = ScrollTrigger.getAll();
+                    const visibleContainers = triggers.filter(trigger => trigger.isActive).length;
+                    return { visible: visibleContainers };
+                }
+            };
+            
+        });
+    </script>
+
+</body>
+</html>
