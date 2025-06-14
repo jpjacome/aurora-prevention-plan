@@ -23,7 +23,7 @@ body {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    background-image: url(/assets/imgs/4.png);
+    background-image: url(../assets/imgs/4.png);
     background-size: cover;
     z-index: -99;
 }
@@ -704,13 +704,13 @@ body {
 }
 .bullet-navbar h3.bullet-label {
     min-width: 120px;
-    max-width: 180px;
-    width: 150px;
-    text-align: right;
+    max-width: 30vw;
+    width: 200px;
+    text-align: left;
     font-size: 1.1rem;
     font-family: var(--font-titles);
-    color: var(--color-2);
-    font-weight: 600;
+    color: var(--color-3);
+    font-weight: 400;
     margin: 0;
     padding: 0 0.5rem 0 0;
     white-space: nowrap;

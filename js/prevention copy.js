@@ -73,14 +73,9 @@ document.addEventListener('DOMContentLoaded', function() {            // Create 
                 }
             }
         });
-    });    
-    
-    // **ELEGANT POP ANIMATIONS FOR INNER CONTAINERS**
-    // Create beautiful entrance animations for each inner container (EXCEPT wrapper-1)
-    const innerContainers = gsap.utils.toArray('.inner-container').filter((container, index) => {
-        // Exclude wrapper-1's inner-container (index 0) since it has its own page load animation
-        return index !== 0;
-    });
+    });    // **ELEGANT POP ANIMATIONS FOR INNER CONTAINERS**
+    // Create beautiful entrance animations for each inner container
+    const innerContainers = gsap.utils.toArray('.inner-container');
     
     innerContainers.forEach((container, i) => {
         // Set initial state - hidden and smaller
@@ -190,15 +185,14 @@ document.addEventListener('DOMContentLoaded', function() {            // Create 
             const visibleContainers = triggers.filter(trigger => trigger.isActive).length;
             return { visible: visibleContainers };
         }
-    };    // **NAVBAR BULLET SYSTEM** - ScrollTrigger-based implementation
+    };    // **NAVBAR BULLET SYSTEM** - Clean, consolidated implementation
     (function() {
       const bullets = document.querySelectorAll('.bullet-navbar .bullet');
       const wrappers = Array.from(document.querySelectorAll('.wrapper'));
       const bulletLabel = document.querySelector('.bullet-navbar .bullet-label');
       
       if (!bullets.length || !wrappers.length) return;
-      
-      // Extract titles from each wrapper's data-nav-title attribute
+        // Extract titles from each wrapper's data-nav-title attribute
       const wrapperTitles = wrappers.map(wrapper => {
         const titleElement = wrapper.querySelector('.title h1, .title h2');
         if (titleElement && titleElement.hasAttribute('data-nav-title')) {
@@ -207,54 +201,74 @@ document.addEventListener('DOMContentLoaded', function() {            // Create 
         // Fallback to text content if no data attribute
         return titleElement ? titleElement.textContent.trim() : `Sección ${wrappers.indexOf(wrapper) + 1}`;
       });
-      
-      // Function to activate a specific bullet
-      function activateBullet(index) {
-        // Clear all bullets
-        bullets.forEach(bullet => bullet.classList.remove('bullet-active'));
-        // Activate the specified bullet
-        if (bullets[index]) {
-          bullets[index].classList.add('bullet-active');
-          // Update label
-          if (bulletLabel && wrapperTitles[index]) {
-            bulletLabel.textContent = wrapperTitles[index];
-          }
+        let lastScrollY = 0;
+      let scrollDirection = 'down';
+      let isScrolling = false;
+        // Get current scroll position (unified function)
+      function getScrollY() {
+        let smoother = window.ScrollSmoother && ScrollSmoother.get();
+        return smoother ? smoother.scrollTop() : (window.scrollY || window.pageYOffset);
+      }      // Track scroll direction and handle all bullet activation
+      function handleBulletActivation() {
+        const currentScrollY = getScrollY();
+        
+        // Update scroll direction
+        if (currentScrollY > lastScrollY) {
+          scrollDirection = 'down';
+        } else if (currentScrollY < lastScrollY) {
+          scrollDirection = 'up';
         }
-      }
-      
-      // Create ScrollTrigger for each wrapper
-      wrappers.forEach((wrapper, index) => {
-        ScrollTrigger.create({
-          trigger: wrapper,
-          start: 'top 50%', // When wrapper top hits middle of viewport
-          end: 'bottom 50%', // When wrapper bottom hits middle of viewport
-          scroller: '#smooth-wrapper', // Use ScrollSmoother scroller
-          
-          onEnter: () => {
-            // Activate this bullet when entering from above
-            activateBullet(index);
-          },
-          
-          onEnterBack: () => {
-            // Activate this bullet when entering from below (scrolling up)
-            activateBullet(index);
-          },
-          
-          // Optional: Add markers for debugging (remove in production)
-          // markers: true,
-          // id: `navbar-${index}`
+        lastScrollY = currentScrollY;
+        
+        // Calculate which bullet should be active based on scroll position
+        const viewportHeight = window.innerHeight;
+        const sectionIndex = Math.floor(currentScrollY / viewportHeight);
+        const progressInSection = (currentScrollY % viewportHeight) / viewportHeight;
+        
+        let activeBulletIndex = 0;
+        
+        if (scrollDirection === 'down') {
+          // Activate next bullet when halfway through section
+          activeBulletIndex = progressInSection >= 0.5 
+            ? Math.min(sectionIndex + 1, wrappers.length - 1)
+            : sectionIndex;
+        } else {
+          // Activate current bullet when scrolling up, with better responsiveness
+          activeBulletIndex = progressInSection <= 0.2 && sectionIndex > 0
+            ? sectionIndex - 1
+            : sectionIndex;
+        }
+        
+        // Clamp to valid range
+        activeBulletIndex = Math.max(0, Math.min(activeBulletIndex, bullets.length - 1));
+        
+        // Apply bullet states to ALL bullets
+        bullets.forEach((bullet, index) => {
+          bullet.classList.toggle('bullet-active', index === activeBulletIndex);
         });
-      });
-      
-      // BULLET CLICK HANDLERS
+        
+        // Update bullet label with active wrapper title
+        if (bulletLabel && wrapperTitles[activeBulletIndex]) {
+          bulletLabel.textContent = wrapperTitles[activeBulletIndex];
+        }
+      }// BULLET CLICK HANDLERS
       bullets.forEach((bullet, index) => {
         bullet.addEventListener('click', function() {
           const wrapper = wrappers[index];
           if (wrapper) {
             // Immediately update bullet states and label BEFORE scrolling
-            activateBullet(index);
+            bullets.forEach((b, i) => {
+              b.classList.remove('bullet-active');
+            });
+            bullets[index].classList.add('bullet-active');
             
-            // Scroll to the wrapper
+            if (bulletLabel && wrapperTitles[index]) {
+              bulletLabel.textContent = wrapperTitles[index];
+            }
+              // Temporarily disable scroll handler to prevent interference
+            window.removeEventListener('scroll', mainScrollHandler);
+            
+            // Scroll to the wrapper (keeping original working logic)
             let smoother = ScrollSmoother.get();
             if (smoother) {
               // For first wrapper, scroll to very top (0)
@@ -270,28 +284,61 @@ document.addEventListener('DOMContentLoaded', function() {            // Create 
                 wrapper.scrollIntoView({ behavior: 'smooth' });
               }
             }
+              // Re-enable scroll handler after scroll animation completes
+            setTimeout(() => {
+              lastScrollY = getScrollY();
+              window.addEventListener('scroll', mainScrollHandler, { passive: true });
+            }, 1200); // Give enough time for scroll animation to complete
           }
         });
-      });
+      });        // BULLETPROOF TOP OVERRIDE - Runs on EVERY scroll event, no exceptions
+        function absoluteTopOverride() {
+          const currentScrollY = getScrollY();
+          
+          // If within 300px of top, FORCE first bullet - no questions asked
+          // Reduced from 500px to 300px for faster activation
+          if (currentScrollY <= 300) {
+            // Clear all bullets
+            bullets.forEach(bullet => bullet.classList.remove('bullet-active'));
+            // Force first bullet active
+            bullets[0].classList.add('bullet-active');
+            // Update label
+            if (bulletLabel && wrapperTitles[0]) {
+              bulletLabel.textContent = wrapperTitles[0];
+            }
+            return true; // Signal override happened
+          }
+          return false; // No override
+        }
+
+        // MAIN SCROLL HANDLER - Named function for proper event listener management
+        function mainScrollHandler() {
+          // FIRST: Always check top override before anything else
+          if (absoluteTopOverride()) {
+            return; // If top override activated, skip all other logic
+          }
+          
+          // SECOND: Only run normal bullet logic if not near top
+          // Use requestAnimationFrame for smooth performance
+          if (!isScrolling) {
+            requestAnimationFrame(() => {
+              handleBulletActivation();
+              isScrolling = false;
+            });
+            isScrolling = true;
+          }
+        }
+
+        // SINGLE SCROLL EVENT LISTENER with ABSOLUTE TOP PRIORITY
+        window.addEventListener('scroll', mainScrollHandler, { passive: true });
+          // Initialize on page load - Force first bullet active
+      bullets.forEach(bullet => bullet.classList.remove('bullet-active'));
+      bullets[0].classList.add('bullet-active');
       
-      // BULLET HOVER: Show respective wrapper title in label on hover
-      bullets.forEach((bullet, index) => {
-        bullet.addEventListener('mouseenter', function() {
-          if (bulletLabel && wrapperTitles[index]) {
-            bulletLabel.textContent = wrapperTitles[index];
-          }
-        });
-        bullet.addEventListener('mouseleave', function() {
-          // Restore the label to the currently active bullet
-          const activeIndex = Array.from(bullets).findIndex(b => b.classList.contains('bullet-active'));
-          if (bulletLabel && wrapperTitles[activeIndex]) {
-            bulletLabel.textContent = wrapperTitles[activeIndex];
-          }
-        });
-      });
-      
-      // Initialize - Force first bullet active
-      activateBullet(0);
+      // Set initial bullet label
+      if (bulletLabel && wrapperTitles[0]) {
+        bulletLabel.textContent = wrapperTitles[0];
+      }
       
     })();
 });
@@ -308,96 +355,4 @@ document.addEventListener('DOMContentLoaded', function() {            // Create 
       item.classList.toggle('open');
     });
   });
-})();    
-
-
-// **PAGE LOAD ENTRANCE ANIMATION** - Relaxing and smooth for wrapper 1
-    // Force scroll to top on page load
-    window.scrollTo(0, 0);
-    
-    // First, set wrapper-1's inner-container to hidden for smooth entrance
-    const wrapper1InnerContainer = document.querySelector('.wrapper-1 .inner-container');
-    if (wrapper1InnerContainer) {
-        gsap.set(wrapper1InnerContainer, {
-            opacity: 0, // Start hidden for smooth entrance
-            scale: 0.85,
-            y: 30,
-            rotationX: 10,
-            transformOrigin: "center center"
-        });
-    }
-    
-    // Select wrapper 1 elements for entrance animation
-    const wrapper1Elements = [
-        '.wrapper-1 .logo',
-        '.wrapper-1 .title',
-        '.wrapper-1 .paragraph',
-        '.wrapper-1 .cta-buttons'
-    ];
-    
-    // Only fade in the elements (no movement, scale, or rotation)
-    gsap.set(wrapper1Elements, {
-        opacity: 0
-    });
-    
-    // Create beautiful entrance timeline with stagger
-    const entranceTl = gsap.timeline({ 
-        delay: .2, // Longer delay for more elegant entrance
-        onComplete: () => {
-            console.log('✨ Wrapper 1 entrance animation complete');
-        }
-    });
-    
-    // Animate the inner container first, slow and smooth
-    entranceTl.to(wrapper1InnerContainer, {
-        opacity: 1,
-        scale: 1,
-        y: 0,
-        rotationX: 0,
-        duration: 2.2,
-        ease: "power2.out"
-    })
-    // Fade in the children after the container is mostly visible
-    .to(wrapper1Elements, {
-        opacity: 1,
-        duration: 2,
-        ease: "power2.out",
-        stagger: {
-            each: 0.35,
-            from: "start",
-            ease: "power2.out"
-        }
-    }, "-=0.5"); // Start children after most of the container is visible
-
-    // **BULLET NAVBAR ENTRANCE ANIMATION**
-    // Hide navbar and its children initially
-    const bulletNavbar = document.querySelector('.bullet-navbar');
-    const bulletNavbarLabel = bulletNavbar?.querySelector('.bullet-label');
-    const bulletNavbarList = bulletNavbar?.querySelector('ul');
-    if (bulletNavbar) {
-        gsap.set(bulletNavbar, { opacity: 0 });
-    }
-    if (bulletNavbarLabel) {
-        gsap.set(bulletNavbarLabel, { opacity: 0 });
-    }
-    if (bulletNavbarList) {
-        gsap.set(bulletNavbarList, { opacity: 0 });
-    }
-    // Timeline for navbar entrance
-    const navbarTl = gsap.timeline({ delay: 2 });
-    // Fade in navbar background (parent)
-    navbarTl.to(bulletNavbar, {
-        opacity: 1,
-        duration: 1.2,
-        ease: "power2.out"
-    });
-    // Fade in label and ul children one by one
-    navbarTl.to([bulletNavbarLabel, bulletNavbarList], {
-        opacity: 1,
-        duration: 1.1,
-        ease: "power2.out",
-        stagger: {
-            each: 0.25,
-            from: "start"
-        }
-    });
+})();
