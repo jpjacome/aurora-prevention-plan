@@ -1,158 +1,330 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+<head>    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Green Shades Full Screen Containers</title>   
+    <title>Pet plant calculator</title>   
     
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+      <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollSmoother.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <link rel="stylesheet" href="./css/aurora-general.css">
+    <link rel="stylesheet" href="./css/prevention-style.css">
      
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            overflow-x: hidden;
-        }        .container {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            /* Remove position: sticky - ScrollTrigger pin will handle this */
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }        
-        .inner-container {
-            width: 80%;
-            height: 80%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            /* Enhanced animation support */
-            transition: all 0.3s ease;
-            transform-style: preserve-3d;
-            will-change: transform, opacity;
-            /* Initial state - will be overridden by GSAP */
-            opacity: 0;
-            transform: scale(0.8) translateY(60px) rotateX(15deg);
-            /* Subtle animated gradient background */
-            position: relative;
-            overflow: hidden;
-        }
-
-        .inner-container::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.03), 
-                transparent,
-                rgba(255, 255, 255, 0.05),
-                transparent
-            );
-            animation: shimmer 6s ease-in-out infinite;
-            pointer-events: none;
-        }
-
-        @keyframes shimmer {
-            0%, 100% { transform: translateX(-100%) translateY(-100%) rotate(0deg); }
-            50% { transform: translateX(100%) translateY(100%) rotate(180deg); }
-        }
-
-
-        .inner-container:hover::before {
-            animation-duration: 3s; /* Faster shimmer on hover */
-        }.content p {
-            font-size: 2.5rem;
-            font-weight: bold;
-            text-align: center;
-            /* Animation support for text */
-            opacity: 0;
-            transform: translateY(20px);
-            will-change: transform, opacity;
-        }
-
-        .container-1 {
-            background-color: #2d5016; /* Dark forest green */
-        }
-
-        .container-2 {
-            background-color: #4a7c59; /* Medium forest green */
-        }
-
-        .container-3 {
-            background-color: #6b8e6b; /* Sage green */
-        }
-
-        .container-4 {
-            background-color: #8fbc8f; /* Light sage green */
-        }
-
-        .container-5 {
-            background-color: #98fb98; /* Pale green */
-            color: #2d5016; /* Dark text for better contrast on light background */
-        }        /* Smooth scroll behavior */
-        html {
-            scroll-behavior: smooth;
-        }
-
-
-
-    </style>
 </head>
 <body>
+    <nav class="bullet-navbar">
+        <h3 class="bullet-label"></h3>
+        <ul>
+            <li><div class="bullet" title="Inicio"></div></li>
+            <li><div class="bullet" title="Información básica"></div></li>
+            <li><div class="bullet" title="Detalles de tu mascota"></div></li>
+            <li><div class="bullet" title="Su entorno"></div></li>
+            <li><div class="bullet" title="Resultado"></div></li>
+        </ul>
+    </nav>
     <div id="smooth-wrapper">
-        <div id="smooth-content">            <!-- Container 1 - Dark Forest Green -->
-            <div class="container container-1" id="section-1">
+        <div id="smooth-content">           
+            <!-- Container 1 - Dark Forest Green -->
+            <div class="wrapper wrapper-1" id="section-1">
                 <div class="inner-container">
-                    <div class="content">
-                        <p>Dark Forest Green Section</p>
+                    <div class="container container-1">
+
+                        <div class="logo">
+                            <img src="./assets/imgs/logo.png" alt="">
+                        </div>                        <div class="title">
+                            <h1 data-nav-title="01. Plan de prevención">Pet plant finder</h1>
+                        </div>
+                        <div class="paragraph">
+                            <p>Responde estas simples preguntas y descubre la planta que representa a tu mascota.</p>
+                        </div>
+                        <div class="cta-buttons">
+                            <a href="#" onclick="scrollToSection(2); return false;" class="btn btn-primary">Comenzar</a>
+                        </div>
+
+                    </div>
+                    <div class="container container-2">
                     </div>
                 </div>
-            </div>            <!-- Container 2 - Medium Forest Green -->
-            <div class="container container-2" id="section-2">
-                <div class="inner-container">
-                    <div class="content">
-                        <p>Medium Forest Green Section</p>
+            </div>            
+            
+            <!-- Container 2 - Medium Forest Green -->
+            <div class="wrapper wrapper-2" id="section-2">
+                <div class="inner-container wrapper-2-flex">
+                    <div class="benefits-col">
+                        <div class="title" style="display: none;">
+                            <h2 data-nav-title="02. Información básica">Información básica</h2>
+                        </div>
+                        <form class="pet-form">
+                            <div class="form-group">
+                                <label for="owner-name">¿Cómo te llamas?</label>
+                                <input type="text" id="owner-name" name="owner-name" placeholder="Nombre del cuidador" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="pet-name">¿Cómo se llama tu mascota?</label>
+                                <input type="text" id="pet-name" name="pet-name" placeholder="Nombre de tu mascota" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="pet-species">Especie de mascota:</label>
+                                <select id="pet-species" name="pet-species" required>
+                                    <option value="" disabled selected>Selecciona la especie</option>
+                                    <option>Perro</option>
+                                    <option>Gato</option>
+                                    <option>Conejo</option>
+                                    <option>Hámster</option>
+                                    <option>Pájaro</option>
+                                    <option>Tortuga</option>
+                                    <option>Pez</option>
+                                    <option>Otro</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Género:</label>
+                                <div class="radio-group">
+                                    <label class="radio-label">
+                                        <input type="radio" name="gender" value="masculino" required>
+                                        <span>Masculino</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="gender" value="femenino" required>
+                                        <span>Femenino</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                </div>
-            </div>            <!-- Container 3 - Sage Green -->
-            <div class="container container-3" id="section-3">
-                <div class="inner-container">
-                    <div class="content">
-                        <p>Sage Green Section</p>
-                    </div>
-                </div>
-            </div>            <!-- Container 4 - Light Sage Green -->
-            <div class="container container-4" id="section-4">
-                <div class="inner-container">
-                    <div class="content">
-                        <p>Light Sage Green Section</p>
-                    </div>
-                </div>
-            </div>            <!-- Container 5 - Pale Green -->
-            <div class="container container-5" id="section-5">
-                <div class="inner-container">
-                    <div class="content">
-                        <p>Pale Green Section</p>
+                    <div class="benefits-image-col">            
                     </div>
                 </div>
             </div>
+            
+            <!-- Container 3 - Sage Green -->
+            <div class="wrapper wrapper-3" id="section-3">
+                <div class="inner-container wrapper-3-flex">
+                    <div class="pet-details-col">
+                        <div class="section-header">
+                            <h2 data-nav-title="03. Conozcamos a tu mascota">Conozcamos más de tu mascota</h2>
+                        </div>
+                        
+                        <form class="pet-details-form">
+
+                            <div class="form-group">
+                                <label for="pet-birthday">Fecha de cumpleaños:</label>
+                                <input type="date" id="pet-birthday" name="pet-birthday" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="pet-breed">Raza:</label>
+                                <input type="text" id="pet-breed" name="pet-breed" placeholder="Raza de tu mascota" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="pet-weight">Peso aproximado (en kg):</label>
+                                <select id="pet-weight" name="pet-weight" required>
+                                    <option value="" disabled selected>Selecciona el peso de tu mascota</option>
+                                    <option value="1-5">1-5 kg</option>
+                                    <option value="5-10">5-10 kg</option>
+                                    <option value="10-15">10-15 kg</option>
+                                    <option value="15-25">15-25 kg</option>
+                                    <option value="25-35">25-35 kg</option>
+                                    <option value="35+">Más de 35 kg</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label class="color-label">Color de mascota:</label>
+                                <div class="checkbox-group color-options">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="color" value="rojo">
+                                        <span>🔴 Rojo</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="color" value="azul">
+                                        <span>🔵 Azul</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="color" value="amarillo">
+                                        <span>🟡 Amarillo</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="color" value="verde">
+                                        <span>🟢 Verde</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="color" value="naranja">
+                                        <span>� Naranja</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="color" value="violeta">
+                                        <span>� Violeta</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="color" value="rosa">
+                                        <span>🩷 Rosa</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="color" value="marron">
+                                        <span>🤎 Marrón</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="color" value="blanco">
+                                        <span>⚪ Blanco</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="color" value="negro">
+                                        <span>⚫ Negro</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                           
+                        </form>
+                    </div>
+                    <div class="pet-details-image-col"></div>
+                </div>
+            </div>            
+            
+            <!-- Container 4 - Light Sage Green -->
+            <div class="wrapper wrapper-4" id="section-4">
+                <div class="inner-container wrapper-4-flex">
+                    <div class="environment-col">
+                        <div class="section-header">
+                            <h2 data-nav-title="04. Su entorno cotidiano">Cómo es su entorno cotidiano</h2>
+                        </div>
+                        
+                        <form class="environment-form">
+                            <div class="form-group full-width">
+                                <label>¿Cómo es el lugar donde comparten sus días?</label>
+                                <p class="sub-label">¿Viven juntos en un espacio como...?</p>
+                                <div class="radio-group">
+                                    <label class="radio-label">
+                                        <input type="radio" name="living-space" value="casa-jardin" required>
+                                        <span>🏡 Una casa con jardín</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="living-space" value="casa-sin-jardin" required>
+                                        <span>🏠 Una casa sin jardín</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="living-space" value="departamento" required>
+                                        <span>🏢 Un departamento</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="living-space" value="finca-terreno" required>
+                                        <span>🌳 Una finca o terreno amplio</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label>¿Qué te inspira tu mascota cada día?</label>
+                                <p class="sub-label">Elige hasta tres palabras que describan lo que representa para ti:</p>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="inspiration" value="fortaleza">
+                                        <span>💪 Fortaleza</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="inspiration" value="dulzura">
+                                        <span>🧡 Dulzura</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="inspiration" value="libertad">
+                                        <span>🕊️ Libertad</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="inspiration" value="alegria">
+                                        <span>😊 Alegría</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="inspiration" value="nobleza">
+                                        <span>🐾 Nobleza</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="inspiration" value="independencia">
+                                        <span>🐈 Independencia</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="inspiration" value="energia">
+                                        <span>⚡ Energía</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="inspiration" value="paz">
+                                        <span>🌙 Paz</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="inspiration" value="proteccion">
+                                        <span>🛡️ Protección</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="inspiration" value="belleza">
+                                        <span>🌸 Belleza</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="environment-image-col">
+                        <div class="cta-buttons">
+                            <a href="#" onclick="unlockAndScrollToNext(); return false;" class="btn btn-primary">Calcular</a>
+                        </div>
+                    </div>
+                </div>
+            </div>            
+            
+            
+            <!-- Container 5 - Pale Green -->
+            <div class="wrapper wrapper-5" id="section-5">
+                <div class="inner-container">
+                    <div class="title" style="display: none;">
+                        <h2 data-nav-title="05. Tu planta perfecta">Tu planta perfecta</h2>
+                    </div>
+                    <div class="loading-container">
+                        <div class="loading-icon">
+                            <!-- Three SVG icons arranged in equilateral triangle -->
+                            <div class="triangle-container">
+                                <!-- Top SVG -->
+                                <div class="svg-position top">
+                                    <img class="pet-icon" id="pet-svg-top" src="./assets/imgs/icon-dog.svg" width="80" height="80" alt="Pet icon">
+                                </div>
+                                <!-- Bottom Left SVG -->
+                                <div class="svg-position bottom-left">
+                                    <img class="pet-icon" id="pet-svg-left" src="./assets/imgs/icon-cat.svg" width="80" height="80" alt="Pet icon">
+                                </div>
+                                <!-- Bottom Right SVG -->
+                                <div class="svg-position bottom-right">
+                                    <img class="pet-icon" id="pet-svg-right" src="./assets/imgs/icon-bunny.svg" width="80" height="80" alt="Pet icon">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="loading-text" id="loading-text">
+                            <span class="loading-phrase"></span>
+                        </div>
+                        <div class="loading-dots">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
         </div>
+    </div>
+
+    <div class="background-wrapper">
     </div>
 
     <script src="./js/prevention.js"></script>
